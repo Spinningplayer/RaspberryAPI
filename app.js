@@ -3,6 +3,7 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var neo4j = require('neo4j-driver').v1;
 
 var app = express();
 
@@ -11,6 +12,20 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+var driver = neo4j.driver("bolt://localhost", neo4j.auth.basic('neo4j', 'Skaten01'));
+var session = driver.session();
+
+app.get('/',(req, res) => {
+  session
+      .run('MATCH (n) return n')
+      .then(result => {
+        result.records.forEach(record => {
+          console.log(record._fields[0]);
+        })
+      })
+      .catch(err => console.log(err));
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
