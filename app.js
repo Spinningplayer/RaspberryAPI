@@ -15,9 +15,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-var driver = neo4j.driver("bolt://localhost", neo4j.auth.basic('neo4j', 'Skaten01'));
-var session = driver.session();
-
 routes(app);
 
 module.exports = app;
