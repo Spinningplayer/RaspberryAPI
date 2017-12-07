@@ -39,18 +39,16 @@ module.exports = {
 
         session.run('MATCH (n:Server) WHERE id(n)=toInt({paramID}) return n', {paramID: id})
             .then(result => {
-                var serverArray = [];
-                result.records.forEach((record) => {
-                    serverArray.push(new Server({
-                        id: record._fields[0].identity.low,
-                        name: record._fields[0].properties.name,
-                        address: record._fields[0].properties.address,
-                        maxRAM: record._fields[0].properties.maxRAM,
-                    }))
+                var record = result.records[0];
+                var newServer = new Server({
+                    id: record._fields[0].identity.low,
+                    name: record._fields[0].properties.name,
+                    address: record._fields[0].properties.address,
+                    maxRAM: record._fields[0].properties.maxRAM,
                 });
 
                 res.status(200);
-                res.json(serverArray);
+                res.json(newServer);
 
                 session.close();
             })
@@ -73,17 +71,16 @@ module.exports = {
                 ramParam: body.maxRAM
             })
             .then(result => {
-                var serverArray = [];
-                result.records.forEach((record) => {
-                    serverArray.push(new Server({
-                        id: record._fields[0].identity.low,
-                        name: record._fields[0].properties.name,
-                        address: record._fields[0].properties.address,
-                        maxRAM: record._fields[0].properties.maxRAM,
-                    }))
+                var record = result.records[0];
+                var newServer = new Server({
+                    id: record._fields[0].identity.low,
+                    name: record._fields[0].properties.name,
+                    address: record._fields[0].properties.address,
+                    maxRAM: record._fields[0].properties.maxRAM,
                 });
+
                 res.status(200);
-                res.json(serverArray);
+                res.json(newServer);
 
                 session.close();
             })
@@ -102,7 +99,9 @@ module.exports = {
         session.run('MATCH (n:Server) WHERE id(n)=toInt({paramID}) DELETE n', {paramID: id})
             .then(result => {
                 res.status(200);
-                res.json(result);
+                res.json({id: id});
+
+                session.close();
             }).catch(err => {
                 console.log(err);
 
@@ -112,7 +111,39 @@ module.exports = {
                 session.close();
             })
 
+    },
+
+    updateServer(req, res) {
+      var id = req.params.id;
+      var body = req.body;
+      session.run(
+          'MATCH (n:Server) WHERE id(n)=toInt({paramID}) SET n.name={paramName}, n.address={paramAddress} RETURN n',
+          {
+              paramID: id,
+              paramName: body.name,
+              paramAddress: body.address
+          })
+          .then( result => {
+              var record = result.records[0];
+              var newServer = new Server({
+                  id: record._fields[0].identity.low,
+                  name: record._fields[0].properties.name,
+                  address: record._fields[0].properties.address,
+                  maxRAM: record._fields[0].properties.maxRAM,
+              });
+
+              res.status(200);
+              res.json(newServer);
+
+              session.close();
+          })
+          .catch(err => {
+              console.log(err);
+
+              res.status(500);
+              res.json(err);
+
+              session.close();
+          })
     }
-
-
 };
