@@ -41,8 +41,6 @@ module.exports = {
             .then(result => {
 
                 var record = result.records[0];
-                console.log(record._fields[0]);
-                console.log(record._fields[1]);
                 var newServer = new Server({
                     id: record._fields[0].identity.low,
                     name: record._fields[0].properties.name,
