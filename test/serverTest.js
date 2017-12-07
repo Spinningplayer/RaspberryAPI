@@ -50,7 +50,6 @@ describe('server endpoint test', () => {
             .put('/servers/' + serverId)
             .send(server)
             .then(result => {
-                console.log(result.body.address +':' + server.address);
                 Assert(result.body.address == server.address);
                 done();
             })

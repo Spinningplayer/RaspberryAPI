@@ -7,7 +7,7 @@ var session = driver.session();
 module.exports = {
 
     getServers(req, res){
-        session.run('MATCH (n:Server) return n')
+        session.run('MATCH (n:Server)-[r:HAS]->(sp) return n, sp')
             .then((result)=>{
                 var serverArray = [];
                 result.records.forEach((record) => {
@@ -15,7 +15,7 @@ module.exports = {
                         id: record._fields[0].identity.low,
                         name: record._fields[0].properties.name,
                         address: record._fields[0].properties.address,
-                        maxRAM: record._fields[0].properties.maxRAM,
+                        maxRAM: record._fields[1].properties.amount,
                     }))
                 });
 
@@ -37,19 +37,20 @@ module.exports = {
     getServer(req, res) {
         var id = req.params.id;
 
-        session.run('MATCH (n:Server) WHERE id(n)=toInt({paramID}) return n', {paramID: id})
+        session.run('MATCH (n:Server)-[r:HAS]->(sp) WHERE id(n)=toInt({paramID}) return n, sp', {paramID: id})
             .then(result => {
+
                 var record = result.records[0];
+                console.log(record._fields[0]);
+                console.log(record._fields[1]);
                 var newServer = new Server({
                     id: record._fields[0].identity.low,
                     name: record._fields[0].properties.name,
                     address: record._fields[0].properties.address,
-                    maxRAM: record._fields[0].properties.maxRAM,
+                    maxRAM: record._fields[1].properties.amount,
                 });
-
                 res.status(200);
                 res.json(newServer);
-
                 session.close();
             })
             .catch(err => {
@@ -65,10 +66,11 @@ module.exports = {
     createServer(req, res) {
         var body = req.body;
         session.run(
-            'CREATE (n:Server { name: {nameParam}, address: {addressParam}, maxRAM: {ramParam} }) RETURN n', {
+            'CREATE (n:Server { name: {nameParam}, address: {addressParam} }) RETURN n',
+            {
                 nameParam: body.name,
                 addressParam: body.address,
-                ramParam: body.maxRAM
+                //ramParam: body.maxRAM
             })
             .then(result => {
                 var record = result.records[0];
@@ -76,13 +78,13 @@ module.exports = {
                     id: record._fields[0].identity.low,
                     name: record._fields[0].properties.name,
                     address: record._fields[0].properties.address,
-                    maxRAM: record._fields[0].properties.maxRAM,
                 });
 
-                res.status(200);
-                res.json(newServer);
-
-                session.close();
+                module.exports.updateRam(newServer.id, body.maxRAM).then((result => {
+                    newServer.maxRAM = result;
+                    res.status(200);
+                    res.json(newServer);
+                }));
             })
             .catch(err => {
                 console.log(err);
@@ -96,7 +98,7 @@ module.exports = {
 
     deleteServer(req, res) {
         var id = req.params.id;
-        session.run('MATCH (n:Server) WHERE id(n)=toInt({paramID}) DELETE n', {paramID: id})
+        session.run('MATCH (n:Server)-[r]-() WHERE id(n)=toInt({paramID}) DELETE n, r', {paramID: id})
             .then(result => {
                 res.status(200);
                 res.json({id: id});
@@ -129,13 +131,13 @@ module.exports = {
                   id: record._fields[0].identity.low,
                   name: record._fields[0].properties.name,
                   address: record._fields[0].properties.address,
-                  maxRAM: record._fields[0].properties.maxRAM,
               });
 
-              res.status(200);
-              res.json(newServer);
-
-              session.close();
+              module.exports.updateRam(id, body.maxRAM).then((result => {
+                  newServer.maxRAM = result;
+                  res.status(200);
+                  res.json(newServer);
+              }));
           })
           .catch(err => {
               console.log(err);
@@ -145,5 +147,58 @@ module.exports = {
 
               session.close();
           })
+    },
+
+    updateRam(id, ram) {
+        return new Promise((fulfill, reject) => {
+            session.run('MERGE (ram:ServerSpec:Ram { amount: {ramParam} }) return ram',
+                {
+                    ramParam: ram
+                }).then(result => {
+                session.run(
+                    'MATCH (s:Server)-[r:HAS]->(sp:ServerSpec:Ram) WHERE id(s)=toInt({paramID}) ' +
+                    'DELETE r RETURN s',
+                    {
+                        paramID: id,
+                        ramParam: ram
+                    })
+                    .then(result => {
+                        session.run(
+                            'MATCH (s:Server),(sp:ServerSpec:Ram) WHERE id(s)=toInt({paramID}) AND sp.amount={ramParam} ' +
+                            'CREATE (s)-[r:HAS]->(sp) RETURN sp',
+                            {
+                                paramID: id,
+                                ramParam: ram
+                            })
+                            .then(result => {
+                                fulfill(result.records[0]._fields[0].properties.amount);
+                            }).catch(err => {
+                            console.log(err);
+
+                            res.status(500);
+                            res.json(err);
+
+                            session.close();
+                            reject(err);
+                        })
+                    }).catch(err => {
+                    console.log(err);
+
+                    res.status(500);
+                    res.json(err);
+
+                    session.close();
+                    reject(err);
+                })
+            }).catch(err => {
+                console.log(err);
+
+                res.status(500);
+                res.json(err);
+
+                session.close();
+                reject(err);
+            })
+        })
     }
 };
