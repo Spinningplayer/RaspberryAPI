@@ -14,7 +14,7 @@ module.exports = {
                     serverArray.push(new Server({
                         id: record._fields[0].identity.low,
                         name: record._fields[0].properties.name,
-                        adress: record._fields[0].properties.address,
+                        address: record._fields[0].properties.address,
                         maxRAM: record._fields[0].properties.maxRAM,
                     }))
                 });
@@ -35,19 +35,39 @@ module.exports = {
 
         session.run('MATCH (n:Server) WHERE id(n)=toInt({paramID}) return n', {paramID: id})
             .then(result => {
-                console.log(result);
                 var serverArray = [];
                 result.records.forEach((record) => {
                     serverArray.push(new Server({
                         id: record._fields[0].identity.low,
                         name: record._fields[0].properties.name,
-                        adress: record._fields[0].properties.address,
+                        address: record._fields[0].properties.address,
                         maxRAM: record._fields[0].properties.maxRAM,
                     }))
                 });
 
                 res.status(200);
                 res.json(serverArray);
+
+                session.close();
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500);
+                res.json(err);
+            })
+    },
+
+    createServer(req, res) {
+        var body = req.body;
+        session.run(
+            'CREATE (n:Server { name: {nameParam}, address: {addressParam}, maxRAM: {ramParam} }) RETURN n', {
+                nameParam: body.name,
+                addressParam: body.address,
+                ramParam: body.maxRAM
+            })
+            .then(result => {
+                res.status(200);
+                res.json(body);
             })
             .catch(err => {
                 console.log(err);
@@ -55,4 +75,6 @@ module.exports = {
                 res.json(err);
             })
     }
+
+
 };
