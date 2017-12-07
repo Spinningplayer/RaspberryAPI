@@ -25,8 +25,12 @@ module.exports = {
                 session.close();
             })
             .catch(err => {
+                console.log(err);
+
                 res.status(500);
                 res.json(err);
+
+                session.close();
             })
     },
 
@@ -52,8 +56,11 @@ module.exports = {
             })
             .catch(err => {
                 console.log(err);
+
                 res.status(500);
                 res.json(err);
+
+                session.close();
             })
     },
 
@@ -77,12 +84,34 @@ module.exports = {
                 });
                 res.status(200);
                 res.json(serverArray);
+
+                session.close();
             })
             .catch(err => {
                 console.log(err);
+
                 res.status(500);
                 res.json(err);
+
+                session.close();
             })
+    },
+
+    deleteServer(req, res) {
+        var id = req.params.id;
+        session.run('MATCH (n:Server) WHERE id(n)=toInt({paramID}) DELETE n', {paramID: id})
+            .then(result => {
+                res.status(200);
+                res.json(result);
+            }).catch(err => {
+                console.log(err);
+
+                res.status(500);
+                res.json(err);
+
+                session.close();
+            })
+
     }
 
 

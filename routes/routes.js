@@ -12,4 +12,5 @@ module.exports = (app) => {
     app.get('/servers', serverController.getServers);
     app.get('/servers/:id', serverController.getServer);
     app.post('/servers', serverController.createServer);
+    app.delete('/servers/:id', serverController.deleteServer);
 }
