@@ -66,8 +66,17 @@ module.exports = {
                 ramParam: body.maxRAM
             })
             .then(result => {
+                var serverArray = [];
+                result.records.forEach((record) => {
+                    serverArray.push(new Server({
+                        id: record._fields[0].identity.low,
+                        name: record._fields[0].properties.name,
+                        address: record._fields[0].properties.address,
+                        maxRAM: record._fields[0].properties.maxRAM,
+                    }))
+                });
                 res.status(200);
-                res.json(body);
+                res.json(serverArray);
             })
             .catch(err => {
                 console.log(err);
