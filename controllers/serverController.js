@@ -11,11 +11,12 @@ module.exports = {
             .then((result)=>{
                 var serverArray = [];
                 result.records.forEach((record) => {
+                    console.log(record._fields[1]);
                     serverArray.push(new Server({
                         id: record._fields[0].identity.low,
                         name: record._fields[0].properties.name,
                         address: record._fields[0].properties.address,
-                        maxRAM: record._fields[1].properties.amount,
+                        ram: record._fields[1].properties.amount,
                     }))
                 });
 
@@ -45,7 +46,7 @@ module.exports = {
                     id: record._fields[0].identity.low,
                     name: record._fields[0].properties.name,
                     address: record._fields[0].properties.address,
-                    maxRAM: record._fields[1].properties.amount,
+                    ram: record._fields[1].properties.amount,
                 });
                 res.status(200);
                 res.json(newServer);
@@ -68,7 +69,7 @@ module.exports = {
             {
                 nameParam: body.name,
                 addressParam: body.address,
-                //ramParam: body.maxRAM
+                //ramParam: body.ram
             })
             .then(result => {
                 var record = result.records[0];
@@ -78,8 +79,8 @@ module.exports = {
                     address: record._fields[0].properties.address,
                 });
 
-                module.exports.updateRam(newServer.id, body.maxRAM).then((result => {
-                    newServer.maxRAM = result;
+                module.exports.updateRam(newServer.id, body.ram).then((result => {
+                    newServer.ram = result;
                     res.status(200);
                     res.json(newServer);
                 }));
@@ -131,8 +132,8 @@ module.exports = {
                   address: record._fields[0].properties.address,
               });
 
-              module.exports.updateRam(id, body.maxRAM).then((result => {
-                  newServer.maxRAM = result;
+              module.exports.updateRam(id, body.ram).then((result => {
+                  newServer.ram = result;
                   res.status(200);
                   res.json(newServer);
               }));

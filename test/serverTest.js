@@ -5,7 +5,7 @@ const request = require('supertest');
 const server = {
     name: "testServer",
     address: "0.0.0.0",
-    maxRAM: "1024"
+    ram: "1024"
 }
 var serverId;
 
