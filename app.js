@@ -3,11 +3,13 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var neo4j = require('neo4j-driver').v1;
+var mongoose = require('mongoose');
 
 var routes = require('./routes/routes');
 
 var app = express();
+
+mongoose.Promise = global.Promise;
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
