@@ -13,8 +13,9 @@ var ledstrip = {
     ]
 };
 
+var controllerId;
 var controller = new LedstripController({
-    name: 'slaapKamer',
+    name: 'slaap kamer',
     address: '192.168.1.103',
     ledstrips: [
         ledstrip
@@ -23,42 +24,55 @@ var controller = new LedstripController({
 
 describe('Ledstrips and Controller Endpoint Test', () => {
     it('Can create new controller', (done) => {
-
+        request(app)
+            .post('/controllers')
+            .send(controller)
+            .then(response => {
+                controllerId = response.body._id
+                Assert(response.body.name = controller.name);
+                done();
+            })
     })
 
-    it('Can add ledstrip to controller', (done) => {
-
+    xit('Can add ledstrip to controller', (done) => {
+        request(app)
+            .post('/ledstrips')
     })
 
     it('Can get all controllers', (done) => {
-
+        request(app)
+            .get('/controllers')
+            .then(response => {
+                Assert(response.body[0].name = controller.name);
+                done();
+            })
     });
 
-    it('Can get all ledstrips of one controller', (done) => {
+    xit('Can get all ledstrips of one controller', (done) => {
         
     });
 
-    it('Can get one controller', (done) => {
+    xit('Can get one controller', (done) => {
 
     });
 
-    it('Can get one ledstrip', (done) => {
+    xit('Can get one ledstrip', (done) => {
 
     });
 
-    it('Can update one controller', (done) => {
+    xit('Can update one controller', (done) => {
 
     });
 
-    it('Can update one ledstrip', (done) => {
+    xit('Can update one ledstrip', (done) => {
 
     });
 
-    it('Can delete one controller', (done) => {
+    xit('Can delete one controller', (done) => {
 
     });
 
-    it('Can delete one ledstrip', (done) => {
+    xit('Can delete one ledstrip', (done) => {
 
     });
 })

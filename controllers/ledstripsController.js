@@ -75,7 +75,6 @@ module.exports = {
     },
     addController(req, res) {
         var body = req.body;
-
         Controller.create(body)
             .then(controller => {
                 res.status(200);

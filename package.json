@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "set NODE_ENV=test&& nodemon --exec mocha --recursive -R min"
+    "test": "set NODE_ENV=test&& nodemon --exec mocha --recursive"
   },
   "dependencies": {
     "assert": "^1.4.1",

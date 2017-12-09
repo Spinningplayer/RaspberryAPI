@@ -3,9 +3,8 @@ const Schema = mongoose.Schema;
 const ObjectID = mongoose.Schema.Types.ObjectId;
 
 const ControllerSchema =  new Schema({
-    _id: ObjectID,
     name: {
-        type: Number,
+        type: String,
         required: true
     },
     address: {
@@ -25,6 +24,10 @@ const ControllerSchema =  new Schema({
         color: [Number]
     }]
 });
+
+// ControllerSchema.pre('save', function(next){
+//     this._id = mongoose.Types.ObjectId;
+//})
 
 const Controller = mongoose.model('LedstripController', ControllerSchema);
 
