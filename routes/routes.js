@@ -1,7 +1,7 @@
 var package = require('../package');
 
 const serverController = require('../controllers/serverController');
-const ledstripController = require('../controllers/ledstripController');
+const ledstripController = require('../controllers/ledstripsController');
 
 module.exports = (app) => {
     app.get('/', (req, res) => {
