@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectID = mongoose.Schema.Types.ObjectId;
+const Ledstrip = require('./LedStrip');
 
 const ControllerSchema =  new Schema({
     name: {
@@ -12,16 +13,8 @@ const ControllerSchema =  new Schema({
         required: true
     },
     ledstrips: [{
-        _id: ObjectID,
-        name: {
-            type: String,
-            required: true
-        },
-        address: {
-            type: String,
-            required: true
-        },
-        color: [Number]
+        type: ObjectID,
+        ref: 'Ledstrip'
     }]
 });
 

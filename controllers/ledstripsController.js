@@ -1,10 +1,11 @@
 const mongo = require('../Config/mongo.db');
 const Controller = require('../models/LedstripController')
+const Ledstrip = require('../models/LedStrip');
 
 module.exports = {
 
     getControllers(req, res) {
-        Controller.find({})
+        Controller.find({ }).populate('ledstrips')
             .then(controllers => {
                 res.status(200);
                 res.json(controllers);
@@ -19,7 +20,7 @@ module.exports = {
     getController(req, res) {
         var id = req.params.id;
 
-        Controller.findOne({_id: id})
+        Controller.findOne({_id: id}).populate('ledstrips')
             .then(controller => {
                 res.status(200);
                 res.json(controller);
@@ -35,9 +36,10 @@ module.exports = {
     getLedstrips(req, res) {
         var id = req.params.id;
 
-        Controller.find({_id: id})
+        Controller.findOne({_id: id}).populate('ledstrips')
             .then(controller => {
                 var strips = controller.ledstrips;
+
                 res.status(200);
                 res.json(strips);
             })
@@ -52,7 +54,7 @@ module.exports = {
         var id = req.params.id;
         var address = req.params.address;
 
-        Controller.find({_id: id})
+        Controller.find({_id: id}).populate('ledstrips')
             .then(controller => {
                 controller.ledstrips.find({address: address})
                     .then(strip => {
@@ -75,6 +77,11 @@ module.exports = {
     },
     addController(req, res) {
         var body = req.body;
+
+        if(!Array.isArray(body.ledstrips)) {
+            body.ledstrips = [];
+        }
+
         Controller.create(body)
             .then(controller => {
                 res.status(200);
@@ -91,12 +98,16 @@ module.exports = {
         var body = req.body;
         var id = req.params.id;
 
-        Controller.find({_id: id})
-            .then(controller => {
-                controller.ledstrips.create(body)
-                    .then(strip => {
-                        res.status(200);
-                        res.json(strip);
+        Ledstrip.create(body)
+            .then(ledstrip => {
+                Controller.findOne({_id: id}).populate('ledstrips')
+                    .then(controller => {
+                        controller.ledstrips.push(ledstrip._id);
+                        Controller.findOneAndUpdate({_id: id}, controller)
+                            .then(result => {
+                                res.status(200);
+                                res.json(body);
+                            })
                     })
                     .catch(err => {
                         res.status(500);

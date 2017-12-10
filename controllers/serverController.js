@@ -10,7 +10,7 @@ module.exports = {
         session.run('MATCH (n:Server)-[r:HAS]->(sp) return n, sp')
             .then((result)=>{
                 var serverArray = [];
-                result.records.forEach((record) => {;
+                result.records.forEach((record) => {
                     serverArray.push(new Server({
                         id: record._fields[0].identity.low,
                         name: record._fields[0].properties.name,
