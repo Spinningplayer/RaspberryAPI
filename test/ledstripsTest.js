@@ -3,12 +3,7 @@ const app = require('../app');
 const request = require('supertest');
 const LedstripController = require('../models/LedstripController');
 
-var ledstrip = {
-    name: 'bureau',
-    address: 7,
-    color: '255:255:255'
-};
-
+var ledstripId;
 var newLedstrip = {
     name: 'tv',
     address: 8,
@@ -48,8 +43,7 @@ describe('Ledstrips and Controller Endpoint Test', () => {
         request(app)
             .get('/controllers')
             .then(response => {
-                var address = parseInt(response.body[0].ledstrips[0].address);
-                Assert(address == newLedstrip.address);
+                Assert(response.body[0].address == controller.address);
                 done();
             });
     });
@@ -58,6 +52,7 @@ describe('Ledstrips and Controller Endpoint Test', () => {
         request(app)
             .get('/ledstrips/' + controllerId)
             .then(response => {
+                ledstripId = response.body[0]._id;
                 Assert(response.body[0].address = newLedstrip.address);
                 done();
             });
@@ -72,23 +67,53 @@ describe('Ledstrips and Controller Endpoint Test', () => {
             })
     });
 
-    xit('Can get one ledstrip', (done) => {
-
+    it('Can get one ledstrip', (done) => {
+        request(app)
+            .get('/ledstrips/'+controllerId+'/'+newLedstrip.address)
+            .then(response => {
+                Assert(response.body.name === newLedstrip.name);
+                done();
+            })
     });
 
-    xit('Can update one controller', (done) => {
-
+    it('Can update one controller', (done) => {
+        controller.name = "slaapkamer";
+        request(app)
+            .put('/controllers/'+controllerId)
+            .send(controller)
+            .then(response => {
+                Assert(response.body.name === controller.name);
+                done();
+            })
     });
 
-    xit('Can update one ledstrip', (done) => {
-
+    it('Can update one ledstrip', (done) => {
+        newLedstrip.name = 'bureau';
+        request(app)
+            .put('/ledstrips/'+ledstripId)
+            .send(newLedstrip)
+            .then(response => {
+                Assert(response.body.name = newLedstrip.name);
+                done();
+            })
     });
 
-    xit('Can delete one controller', (done) => {
-
+    it('Can delete one ledstrip', (done) => {
+        request(app)
+            .delete('/ledstrips/' + ledstripId +'/'+controllerId)
+        .then(response => {
+            Assert(response.body == ledstripId);
+            done();
+        })
     });
 
-    xit('Can delete one ledstrip', (done) => {
-
+    it('Can delete one controller', (done) => {
+        request(app)
+            .delete('/controllers/' + controllerId)
+            .then(response => {
+                console.log(response.body);
+                Assert(response.body == controllerId);
+                done();
+            })
     });
 })

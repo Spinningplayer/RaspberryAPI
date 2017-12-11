@@ -35,7 +35,7 @@ module.exports = (app) => {
     app.get('/ledstrips/:id', ledstripController.getLedstrips);
     app.get('/ledstrips/:id/:address', ledstripController.getLedstrip);
     app.post('/ledstrips/:id', ledstripController.addLedstrip);
-    app.delete('/ledstrips/:id/:address', ledstripController.deleteLedstrip);
-    app.put('/ledstrips/:id/:address', ledstripController.updateLedstrip);
+    app.delete('/ledstrips/:id/:controller', ledstripController.deleteLedstrip);
+    app.put('/ledstrips/:id', ledstripController.updateLedstrip);
 
 }
