@@ -50,11 +50,10 @@ module.exports = {
   putOutlet(req, res) {
     var body = req.body;
     var id = req.params.id;
-
     Outlets.findOneAndUpdate({_id: id}, body)
       .then(outlet => {
         res.status(200);
-        res.json(outlet);
+        res.json(body);
       })
       .catch(err => {
         res.status(500);
