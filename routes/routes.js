@@ -2,6 +2,7 @@ var package = require('../package');
 
 const serverController = require('../controllers/serverController');
 const ledstripController = require('../controllers/ledstripsController');
+const outletController = require('../controllers/outletController');
 
 module.exports = (app) => {
     app.get('/', (req, res) => {
@@ -31,11 +32,18 @@ module.exports = (app) => {
     //
     // Ledstrips endpoints
     //
-
     app.get('/ledstrips/:id', ledstripController.getLedstrips);
     app.get('/ledstrips/:id/:address', ledstripController.getLedstrip);
     app.post('/ledstrips/:id', ledstripController.addLedstrip);
     app.delete('/ledstrips/:id/:controller', ledstripController.deleteLedstrip);
     app.put('/ledstrips/:id', ledstripController.updateLedstrip);
 
+    //
+    //Outlet endpoints
+    //
+  app.get('/outlets', outletController.getOutlets);
+  app.get('/outlets/:id', outletController.getOutlet);
+  app.post('/outlets', outletController.postOutlet);
+  app.delete('/outlets/:id', outletController.deleteOutlet);
+  app.put('/outlets/:id', outletController.putOutlet);
 }
