@@ -1,4 +1,5 @@
 const Outlets = require('../models/outlet');
+const { exec } = require('child_process');
 
 module.exports = {
   getOutlets(req, res) {
@@ -76,5 +77,22 @@ module.exports = {
 
         console.log(err);
       });
+  },
+
+  switchOutlet(req, res) {
+
+    const body = req.body;
+    const action = (body.state) ? "on" : "off";
+    exec('/home/thijs/PycharmProjects/APC_scripts/quackenbush.py --'+action+' ' + body.number, (err, stdout, stderr) => {
+      if (err) {
+        res.status(500);
+        return;
+      }
+
+      Outlets.findOneAndUpdate({_id: req.params.id}, body);
+
+      res.status(200);
+      res.json({ "state": action});
+    });
   }
 }

@@ -41,9 +41,10 @@ module.exports = (app) => {
     //
     //Outlet endpoints
     //
-  app.get('/outlets', outletController.getOutlets);
-  app.get('/outlets/:id', outletController.getOutlet);
-  app.post('/outlets', outletController.postOutlet);
-  app.delete('/outlets/:id', outletController.deleteOutlet);
-  app.put('/outlets/:id', outletController.putOutlet);
+    app.get('/outlets', outletController.getOutlets);
+    app.get('/outlets/:id', outletController.getOutlet);
+    app.post('/outlets', outletController.postOutlet);
+    app.delete('/outlets/:id', outletController.deleteOutlet);
+    app.put('/outlets/:id', outletController.putOutlet);
+    app.put('/outlets/switch/:id', outletController.switchOutlet);
 }
