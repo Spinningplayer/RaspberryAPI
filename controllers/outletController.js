@@ -80,16 +80,23 @@ module.exports = {
   },
 
   switchOutlet(req, res) {
-
+    console.log("Switching utlet");
     const body = req.body;
     const action = (body.state) ? "on" : "off";
+
     exec('/home/thijs/PycharmProjects/APC_scripts/quackenbush.py --'+action+' ' + body.number, (err, stdout, stderr) => {
       if (err) {
+        console.log(err);
         res.status(500);
+        res.send(err);
         return;
       }
+      console.log(stdout);
 
-      Outlets.findOneAndUpdate({_id: req.params.id}, body);
+      Outlets.findOneAndUpdate({_id: req.params.id}, body)
+        .then(result => {
+          
+        });
 
       res.status(200);
       res.json({ "state": action});
