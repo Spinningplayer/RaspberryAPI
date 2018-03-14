@@ -3,6 +3,7 @@ var package = require('../package');
 const serverController = require('../controllers/serverController');
 const ledstripController = require('../controllers/ledstripsController');
 const outletController = require('../controllers/outletController');
+const musicController = require('../controllers/musicController')
 
 module.exports = (app) => {
     app.get('/', (req, res) => {
@@ -39,7 +40,7 @@ module.exports = (app) => {
     app.put('/ledstrips/:id', ledstripController.updateLedstrip);
 
     //
-    //Outlet endpoints
+    // Outlet endpoints
     //
     app.get('/outlets', outletController.getOutlets);
     app.get('/outlets/:id', outletController.getOutlet);
@@ -47,4 +48,21 @@ module.exports = (app) => {
     app.delete('/outlets/:id', outletController.deleteOutlet);
     app.put('/outlets/:id', outletController.putOutlet);
     app.put('/outlets/switch/:id', outletController.switchOutlet);
+
+    //
+    // Music endpoints
+    //
+
+    app.get('/playlists', musicController.getAllPlaylists);
+    app.get('/playlists/:id', musicController.getPlaylistById);
+    app.get('/songs/', musicController.getAllSongs);
+    app.get('/songs/:id', musicController.getSongById);
+    app.post('/playlists/', musicController.postPlaylist);
+    app.post('/songs', musicController.postSong);
+    app.delete('/playlists/:id', musicController.deletePlaylist);
+    app.delete('/songs/:id', musicController.deleteSong);
+    app.delete('playlists/:playlist/:song', musicController.deleteSongFromPlaylist);
+    app.put('/playlists/:id', musicController.putPlaylist);
+    app.put('/songs/:id', musicController.putSong);
+    app.put('/playlists/:playlist/:song', musicController.addSongToPlaylist);
 }
