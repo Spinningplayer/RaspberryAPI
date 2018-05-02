@@ -3,13 +3,14 @@ var package = require('../package');
 const serverController = require('../controllers/serverController');
 const ledstripController = require('../controllers/ledstripsController');
 const outletController = require('../controllers/outletController');
-const musicController = require('../controllers/musicController')
+const musicController = require('../controllers/musicController');
+const powerController = require('../controllers/poweronController');
+
 
 module.exports = (app) => {
     app.get('/', (req, res) => {
         res.status(200);
         res.json({msg: "RaspberryAPI version " + package.version});
-        console.log("RaspberryAPI version " + package.version);
     });
 
     //
@@ -65,4 +66,12 @@ module.exports = (app) => {
     app.put('/playlists/:id', musicController.putPlaylist);
     app.put('/songs/:id', musicController.putSong);
     app.put('/playlists/:playlist/:song', musicController.addSongToPlaylist);
-}
+
+    //
+    // Power on Endpoints
+    //
+
+    app.post('/poweron/mac/', powerController.startWithMac);
+    app.post('/poweron/url/', powerController.startWithRest);
+    app.post('/poweroff/url/', powerController.stopWithRest);
+};
