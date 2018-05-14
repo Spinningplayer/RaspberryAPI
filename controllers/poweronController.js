@@ -36,6 +36,7 @@ module.exports = {
 
     stopWithRest(req, res) {
         const url = req.body.url;
+
         exec('ssh root@192.168.1.101 > sudo shutdown -h now', (err, stdout, stderr) => {
            if(err) {
                console.log(err);
@@ -45,20 +46,20 @@ module.exports = {
            }
         });
 
-        setTimeout(10000);
-
-        request.get(
-            url,
-            (err, response, body) => {
-                if(err) {
-                    console.log(err);
-                    res.status(500);
-                    res.json({"msg":"Failed to turn off HDD"});
-                    return null;
+        setTimeout(() => {
+            request.get(
+                url,
+                (err, response, body) => {
+                    if(err) {
+                        console.log(err);
+                        res.status(500);
+                        res.json({"msg":"Failed to turn off HDD"});
+                        return null;
+                    }
+                    res.status(200);
+                    res.json({"msg":"Device successfully turned off."});
                 }
-                res.status(200);
-                res.json({"msg":"Device successfully turned off."});
-            }
-        );
+            );
+        }, 10000);
     }
 }
