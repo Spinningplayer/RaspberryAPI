@@ -5,7 +5,7 @@ const ledstripController = require('../controllers/ledstripsController');
 const outletController = require('../controllers/outletController');
 const musicController = require('../controllers/musicController');
 const powerController = require('../controllers/poweronController');
-
+const routineController = require('../controllers/routineController');
 
 module.exports = (app) => {
     app.get('/', (req, res) => {
@@ -74,4 +74,20 @@ module.exports = (app) => {
     app.post('/poweron/mac/', powerController.startWithMac);
     app.post('/poweron/url/', powerController.startWithRest);
     app.post('/poweroff/url/', powerController.stopWithRest);
+
+    //
+    // Routine and Task Endpoints
+    //
+
+    app.get('/routines/', routineController.getRoutines);
+    app.get('/routines/:id', routineController.getRoutine);
+    app.post('/routines/', routineController.addRoutine);
+    app.post('/tasks/:id', routineController.createTask);
+    app.put('/routines/:id', routineController.updateRoutine);
+    app.put('/tasks/:id', routineController.updateTask);
+    app.delete('/routines/:id', routineController.deleteRoutine);
+    app.delete('/tasks/:routine/:task', routineController.deleteTask);
+    app.get('/routines/execute/:id', routineController.executeRoutine);
+
+
 };

@@ -111,7 +111,6 @@ describe('Ledstrips and Controller Endpoint Test', () => {
         request(app)
             .delete('/controllers/' + controllerId)
             .then(response => {
-                console.log(response.body);
                 Assert(response.body == controllerId);
                 done();
             })

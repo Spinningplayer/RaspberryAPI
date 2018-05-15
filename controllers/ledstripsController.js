@@ -101,6 +101,7 @@ module.exports = {
             .then(ledstrip => {
                 Controller.findOne({_id: id}).populate('ledstrips')
                     .then(controller => {
+
                         controller.ledstrips.push(ledstrip._id);
                         Controller.findOneAndUpdate({_id: id}, controller)
                             .then(result => {

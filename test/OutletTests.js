@@ -22,7 +22,7 @@ describe('Outlet endpoints tests',()=>{
       })
   });
 
-  it('can get all outlets', (done) => {
+  xit('can get all outlets', (done) => {
     request(app)
       .get('/outlets')
       .then(response => {

@@ -51,10 +51,10 @@ module.exports= {
               Routines.findOne({_id: id}).populate('tasks')
                   .then(routine => {
                     routine.tasks.push(task._id);
-                    Routines.findOneAndUpdate({_id: id}, routine)
+                    Routines.findOneAndUpdate({_id: id}, routine).populate('tasks')
                         .then( updatedRoutine => {
                             res.status(200);
-                            res.json(updatedRoutine);
+                            res.json(task);
                         })
                         .catch(err => {
                             res.status(500);
@@ -69,8 +69,6 @@ module.exports= {
 
                       console.log(err);
                   });
-              res.status(200);
-              res.json(task);
           })
           .catch(err => {
               res.status(500);
@@ -83,13 +81,12 @@ module.exports= {
 
     addRoutine(req, res) {
         const body = req.body;
-        const id = req.params.id;
 
         if(!Array.isArray(body.tasks)){
             body.tasks = [];
         }
 
-        Routines.create(body).populate('tasks')
+        Routines.create(body)
             .then( routine => {
                 res.status(200);
                 res.json(routine);
@@ -109,7 +106,7 @@ module.exports= {
         Routines.findOneAndUpdate({_id: id}, {name: body.name, state: body.state}).populate('tasks')
             .then( routine => {
                 res.status(200);
-                res.json(routine);
+                res.json(body);
             })
             .catch(err => {
                 res.status(500);
@@ -126,7 +123,7 @@ module.exports= {
         Tasks.findOneAndUpdate({_id: id}, body)
             .then( task => {
                 res.status(200);
-                res.json(task);
+                res.json(body);
             })
             .catch(err => {
                 res.status(500);
@@ -151,7 +148,7 @@ module.exports= {
                 Routines.findOneAndRemove({_id: id})
                     .then( result => {
                         res.status(200);
-                        res.json({"msg": "Removed Routine."});
+                        res.json(id);
                     })
                     .catch(err => {
                         res.status(500);
@@ -163,10 +160,10 @@ module.exports= {
     },
 
     deleteTask(req, res) {
-        const taskId = req.paams.task;
+        const taskId = req.params.task;
         const routineId = req.params.routine;
 
-        Routines.findOne({_id: routineId})
+        Routines.findOne({_id: routineId}).populate('tasks')
             .then(routine => {
                 function remove(array, id) {
                     return array.filter(e => e._id.toString() !== id.toString());
@@ -179,7 +176,7 @@ module.exports= {
                         Tasks.findOneAndRemove({_id: taskId})
                             .then( result2 => {
                                 res.status(200);
-                                res.json({"msg": "Removed Task."});
+                                res.json(taskId);
                             })
                             .catch(err => {
                                 res.status(500);
