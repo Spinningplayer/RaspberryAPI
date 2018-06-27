@@ -199,8 +199,11 @@ module.exports= {
 
         Routines.findOne({_id: id}).populate('tasks')
             .then(routine => {
+
                 let success = true;
-                for( const task in routine.tasks) {
+                let count = 1;
+                let max = routine.tasks.length;
+                for( const task of routine.tasks) {
                     if(!success) {
                         break;
                     }
@@ -216,6 +219,7 @@ module.exports= {
 
                                     }
                                 });
+                                count++;
                                 break;
 
 
@@ -230,6 +234,7 @@ module.exports= {
                                         }
                                     }
                                 );
+                                count++;
                                 break;
 
                             case 'command':
@@ -240,8 +245,17 @@ module.exports= {
                                         success = false;
                                     }
                                 });
+                              count++;
                         }
                     }, task.sleepTime)
+                }
+                // while(count < max) {}
+                if(success) {
+                  res.status(200);
+                  res.json({"msg": "successfully executed routine"});
+                } else {
+                  res.status(500);
+                  res.json({"msg": "failed to execute routine"});
                 }
             })
     }
