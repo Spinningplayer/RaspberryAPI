@@ -84,7 +84,7 @@ module.exports = {
     const body = req.body;
     const action = (body.state) ? "on" : "off";
 
-    exec('/home/thijs/PycharmProjects/APC_scripts/quackenbush.py --'+action+' ' + body.number, (err, stdout, stderr) => {
+    exec('apc --'+action+' ' + body.number, (err, stdout, stderr) => {
       if (err) {
         console.log(err);
         res.status(500);
