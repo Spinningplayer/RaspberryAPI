@@ -3,7 +3,7 @@ const { exec } = require('child_process');
 
 module.exports = {
   getOutlets(req, res) {
-    Outlets.find({})
+    Outlets.find({}).populate('turnOn', 'turnOff')
       .then(outlets => {
         res.status(200);
         res.json(outlets);
@@ -19,7 +19,7 @@ module.exports = {
   getOutlet(req, res) {
     var id = req.params.id;
 
-    Outlets.findOne({_id: id})
+    Outlets.findOne({_id: id}).populate('turnOn', 'turnOff')
       .then(outlet => {
         res.status(200);
         res.json(outlet);
@@ -35,7 +35,7 @@ module.exports = {
   postOutlet(req, res) {
     var outlet = req.body;
 
-    Outlets.create(outlet)
+    Outlets.create(outlet).populate('turnOn', 'turnOff')
       .then(outlet => {
         res.status(200);
         res.json(outlet);
@@ -51,7 +51,7 @@ module.exports = {
   putOutlet(req, res) {
     var body = req.body;
     var id = req.params.id;
-    Outlets.findOneAndUpdate({_id: id}, body)
+    Outlets.findOneAndUpdate({_id: id}, body).populate('turnOn', 'turnOff')
       .then(outlet => {
         res.status(200);
         res.json(body);
@@ -66,7 +66,7 @@ module.exports = {
 
   deleteOutlet(req, res) {
     var id = req.params.id;
-    Outlets.findOneAndRemove({_id: id})
+    Outlets.findOneAndRemove({_id: id}).populate('turnOn', 'turnOff')
       .then(result => {
         res.status(200);
         res.json(id);
@@ -79,6 +79,7 @@ module.exports = {
       });
   },
 
+  // DEPRECATED
   switchOutlet(req, res) {
     console.log("Switching utlet");
     const body = req.body;
