@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const ObjectID = mongose.Schema.Types.ObjectId;
+const ObjectID = mongoose.Schema.Types.ObjectId;
 const Routine = require('./Routine');
 
 const SwitchSchema = new Schema({
   name: {
-    type: string,
+    type: String,
     required: true
   },
   state: {

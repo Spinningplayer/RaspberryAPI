@@ -6,6 +6,7 @@ const outletController = require('../controllers/outletController');
 const musicController = require('../controllers/musicController');
 const powerController = require('../controllers/poweronController');
 const routineController = require('../controllers/routineController');
+const switchController = require('../controllers/switchController');
 
 module.exports = (app) => {
     app.get('/', (req, res) => {
@@ -89,5 +90,13 @@ module.exports = (app) => {
     app.delete('/tasks/:routine/:task', routineController.deleteTask);
     app.get('/routines/execute/:id', routineController.executeRoutine);
 
+    //
+    // Switch Endpoints
+    //
 
+    app.get('/switches/',switchController.getSwitches);
+    app.get('/switches/:id', switchController.getSwitch);
+    app.post('/switches/', switchController.createSwitch);
+    app.put('/switches/:id', switchController.updateSwitch);
+    app.delete('/switches/:id', switchController.deleteSwitch);
 };
