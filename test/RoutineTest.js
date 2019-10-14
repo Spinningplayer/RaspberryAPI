@@ -93,7 +93,7 @@ describe('Routine and Task endpoints tests', () => {
    request(app)
       .delete('/routines/'+routineId)
       .then(response => {
-        Assert(response.body == routineId);
+        Assert(response.body === routineId);
         done();
       });
   });

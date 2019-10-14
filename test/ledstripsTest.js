@@ -43,7 +43,7 @@ describe('Ledstrips and Controller Endpoint Test', () => {
         request(app)
             .get('/controllers')
             .then(response => {
-                Assert(response.body[0].address == controller.address);
+                Assert(response.body[1].address === controller.address);
                 done();
             });
     });

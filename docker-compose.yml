@@ -1,0 +1,45 @@
+version: '2'
+services:
+  dashboard-api:
+    build: ./
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    links:
+      - database
+      - graph-database
+    depends_on:
+      - database
+      - graph-database
+    restart: always
+    command: npm start
+  
+  database:
+    image: mongo
+    restart: always
+    ports:
+      - "27012:27012"
+    volumes:
+      - dbstore:/data/db
+  
+  graph-database:
+    image: neo4j
+    ports: 
+      - "7474:7474"
+    volumes: 
+      - graph-dbstore:/var/lib/neo4j/data/dbms
+
+  interface:
+    build: ../interface/
+    ports:
+      - "8081:80"
+    depends_on:
+      - database
+      - dashboard-api
+    restart: always
+
+volumes:
+  dbstore:
+  graph-dbstore:

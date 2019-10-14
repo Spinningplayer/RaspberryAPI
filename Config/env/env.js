@@ -1,6 +1,6 @@
 var env = {
     webPort: process.env.PORT || 3000,
-    dbHost: process.env.DB_HOST || 'localhost',
+    dbHost: process.env.DB_HOST || 'database',
     dbPort: process.env.DB_PORT || '',
     dbUser: process.env.DB_USER || '',
     dbPassword: process.env.DB_PASSWORD || '',
@@ -10,7 +10,7 @@ var env = {
 
 var link = process.env.NODE_ENV === 'production' ?
     'mongodb://' + env.dbUser + ':' + env.dbPassword + '@' + env.dbHost + ':' + env.dbPort + '/' + env.dbDatabase :
-    'mongodb://localhost/' + env.dbDatabase;
+    'mongodb://database/' + env.dbDatabase;
 
 module.exports = {
     env: env,

@@ -9,7 +9,7 @@ var outlet = {
 };
 var outletId;
 
-describe('Outlet endpoints tests',()=>{
+xdescribe('Outlet endpoints tests',()=>{
 
   it('can create new outlet', (done) => {
     request(app)
