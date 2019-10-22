@@ -1,8 +1,21 @@
-var Server = function({id, name, address, ram}) {
-    this.id = id;
-    this.name = name;
-    this.address = address;
-    this.ram = ram;
-}
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const ServerSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    address: {
+        type: String,
+        required: true
+    },
+    ram: {
+        type: Number,
+        required: true
+    }
+});
+
+const Server = mongoose.model('Server', ServerSchema);
 
 module.exports = Server;

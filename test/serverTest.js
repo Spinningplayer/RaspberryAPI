@@ -9,7 +9,7 @@ const server = {
 }
 var serverId;
 
-xdescribe('server endpoint test', () => {
+describe('server endpoint test', () => {
 
     it('can create new server', (done) => {
         request(app)
@@ -17,7 +17,7 @@ xdescribe('server endpoint test', () => {
             .send(server)
             .then((result) => {
                 var body = result.body;
-                serverId = result.body.id;
+                serverId = result.body._id;
                 Assert(body.name === server.name);
                 done();
             })
@@ -33,11 +33,10 @@ xdescribe('server endpoint test', () => {
             })
     })
 
-    it('can get one servers', (done) => {
+    it('can get one server', (done) => {
         request(app)
             .get('/servers/' + serverId)
             .then(result => {
-
                 Assert(result.body.name === server.name);
                 done();
             })
@@ -59,7 +58,7 @@ xdescribe('server endpoint test', () => {
         request(app)
             .delete('/servers/' + serverId)
             .then(result => {
-                Assert(result.body.id == serverId);
+                Assert(result.body == serverId);
                 done();
             })
     })
