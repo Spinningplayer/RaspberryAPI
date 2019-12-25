@@ -3,7 +3,7 @@ const Routines = require('../models/Routine');
 
 module.exports = {
   getSwitches(req, res) {
-      Switches.find({}).populate('onRoutine', "offRoutine")
+      Switches.find({}).populate('onRoutine').populate('offRoutine')
         .then(switches => {
           res.status(200);
           res.json(switches);
@@ -19,7 +19,7 @@ module.exports = {
   getSwitch(req, res) {
     const id = req.params.id;
 
-    Switches.findOne({_id: id}).populate('onRoutine', 'offRoutine')
+    Switches.findOne({_id: id}).populate('onRoutine').populate('offRoutine')
       .then(s => {
         res.status(200);
         res.json(s);
@@ -46,7 +46,7 @@ module.exports = {
   },
 
   updateSwitch(req, res) {
-    Switches.findOneAndUpdate({_id: req.params.id}, req.body).populate('onRoutine', 'offRoutine')
+    Switches.findOneAndUpdate({_id: req.params.id}, req.body).populate('onRoutine').populate('offRoutine')
         .then(switchObj => {
             res.status(200);
             res.json(req.body);
@@ -75,7 +75,7 @@ module.exports = {
   executeSwitch(req, res) {
     const id = req.params.id;
 
-    Switches.findOne({_id: id}).populate('onRoutine', 'offRoutine')
+    Switches.findOne({_id: id}).populate('onRoutine').populate('offRoutine')
         .then(switchObj => {
             const routine = !switchObj.state ? switchObj.onRoutine : switchObj.offRoutine;
 
